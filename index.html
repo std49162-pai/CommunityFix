@@ -441,11 +441,31 @@ function renderAdmin(){
 $("adminFilter").onchange=renderAdmin;$("adminSearch").oninput=renderAdmin;
 async function changeStatus(ticketId,status){
  try{
-  const result=await api({action:"updateStatus",ticketId,status});
-  if(result.success===false)throw new Error(result.message||"อัปเดตไม่สำเร็จ");
-  const r=reports.find(x=>x.ticketId===ticketId);if(r)r.status=status;
-  renderDashboard();renderAdmin();renderMap();toast("อัปเดตสถานะแล้ว");
- }catch(e){alert(e.message)}
+  const email=sessionStorage.getItem("communityfixAdminEmail");
+  const password=sessionStorage.getItem("communityfixAdminPassword");
+
+  const result=await api({
+    action:"updateStatus",
+    ticketId,
+    status,
+    email,
+    password
+  });
+
+  if(result.success===false)
+    throw new Error(result.message||result.error||"อัปเดตไม่สำเร็จ");
+
+  const r=reports.find(x=>x.ticketId===ticketId);
+  if(r) r.status=status;
+
+  renderDashboard();
+  renderAdmin();
+  renderMap();
+  toast("อัปเดตสถานะแล้ว");
+
+ }catch(e){
+  alert(e.message);
+ }
 }
 window.changeStatus=changeStatus;
 
@@ -456,6 +476,8 @@ $("adminLoginBtn").onclick=async()=>{
    const result=await api({action:"adminLogin",email,password});
    if(!result.success)throw new Error(result.message||"เข้าสู่ระบบไม่สำเร็จ");
    sessionStorage.setItem("communityfixAdmin","1");
+   sessionStorage.setItem("communityfixAdminEmail",email);
+   sessionStorage.setItem("communityfixAdminPassword",password);
    $("adminLogin").style.display="none";$("adminArea").style.display="block";
    await loadPublicData();renderAdmin();toast("เข้าสู่ระบบสำเร็จ");
  }catch(e){alert(e.message)}
@@ -470,6 +492,7 @@ function boot(){
    setTimeout(renderAdmin,500);
  }
 }
+
 boot();
 </script>
 </body>
