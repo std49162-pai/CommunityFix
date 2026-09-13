@@ -3,2101 +3,477 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="CommunityFix ระบบแจ้งปัญหาชุมชนออนไลน์">
+<meta name="theme-color" content="#2563eb">
 <title>CommunityFix | ระบบแจ้งปัญหาชุมชน</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    scroll-behavior:smooth;
-}
-
 :root{
-    --primary:#2563eb;
-    --primary-dark:#1d4ed8;
-    --light:#eff6ff;
-    --lighter:#f8fafc;
-    --text:#172033;
-    --muted:#64748b;
-    --white:#ffffff;
-    --green:#16a34a;
-    --orange:#f59e0b;
-    --red:#ef4444;
-    --purple:#7c3aed;
-    --border:#e2e8f0;
-    --shadow:0 10px 30px rgba(15,23,42,.08);
-}
-
-body{
-    font-family:'Kanit',sans-serif;
-    background:#f8fafc;
-    color:var(--text);
-    line-height:1.7;
-}
-
-a{
-    text-decoration:none;
-    color:inherit;
-}
-
-button,
-input,
-textarea,
-select{
-    font-family:inherit;
-}
-
-.container{
-    width:min(1180px,92%);
-    margin:auto;
-}
-
-/* NAVBAR */
-.navbar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    z-index:1000;
-    background:rgba(255,255,255,.94);
-    backdrop-filter:blur(15px);
-    border-bottom:1px solid rgba(226,232,240,.8);
-}
-
-.nav-inner{
-    height:72px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:22px;
-    font-weight:700;
-    color:var(--primary);
-}
-
-.logo-icon{
-    width:42px;
-    height:42px;
-    display:grid;
-    place-items:center;
-    border-radius:13px;
-    background:var(--primary);
-    color:white;
-    font-size:21px;
-}
-
-.nav-links{
-    display:flex;
-    align-items:center;
-    gap:25px;
-}
-
-.nav-links a{
-    font-size:15px;
-    color:#475569;
-    transition:.2s;
-}
-
-.nav-links a:hover{
-    color:var(--primary);
-}
-
-.nav-btn{
-    background:var(--primary);
-    color:white!important;
-    padding:9px 18px;
-    border-radius:10px;
-}
-
-.menu-btn{
-    display:none;
-    background:none;
-    border:0;
-    font-size:25px;
-    cursor:pointer;
-}
-
-/* HERO */
-.hero{
-    padding:145px 0 90px;
-    background:
-        radial-gradient(circle at 85% 20%,#dbeafe 0,transparent 32%),
-        linear-gradient(180deg,#fff,#f8fbff);
-    overflow:hidden;
-}
-
-.hero-grid{
-    display:grid;
-    grid-template-columns:1.05fr .95fr;
-    align-items:center;
-    gap:60px;
-}
-
-.badge{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:#dbeafe;
-    color:#1d4ed8;
-    padding:7px 14px;
-    border-radius:30px;
-    font-size:14px;
-    margin-bottom:18px;
-}
-
-.hero h1{
-    font-size:clamp(38px,5vw,64px);
-    line-height:1.15;
-    margin-bottom:20px;
-    letter-spacing:-1px;
-}
-
-.hero h1 span{
-    color:var(--primary);
-}
-
-.hero p{
-    color:var(--muted);
-    font-size:18px;
-    max-width:620px;
-    margin-bottom:30px;
-}
-
-.hero-buttons{
-    display:flex;
-    gap:13px;
-    flex-wrap:wrap;
-}
-
-.btn{
-    border:0;
-    cursor:pointer;
-    padding:12px 22px;
-    border-radius:12px;
-    font-size:16px;
-    font-weight:500;
-    transition:.25s;
-}
-
-.btn-primary{
-    background:var(--primary);
-    color:white;
-    box-shadow:0 8px 18px rgba(37,99,235,.2);
-}
-
-.btn-primary:hover{
-    background:var(--primary-dark);
-    transform:translateY(-2px);
-}
-
-.btn-outline{
-    background:white;
-    color:var(--primary);
-    border:1px solid #bfdbfe;
-}
-
-.btn-outline:hover{
-    background:#eff6ff;
-}
-
-.hero-card{
-    position:relative;
-    min-height:410px;
-    border-radius:30px;
-    background:linear-gradient(145deg,#dbeafe,#eff6ff);
-    padding:28px;
-    box-shadow:var(--shadow);
-}
-
-.community-scene{
-    height:350px;
-    position:relative;
-    overflow:hidden;
-    border-radius:23px;
-    background:linear-gradient(#bfdbfe 0 52%,#bbf7d0 52% 100%);
-}
-
-.sun{
-    position:absolute;
-    width:75px;
-    height:75px;
-    background:#fde68a;
-    border-radius:50%;
-    top:35px;
-    right:45px;
-}
-
-.cloud{
-    position:absolute;
-    width:95px;
-    height:28px;
-    background:white;
-    border-radius:50px;
-    top:70px;
-    left:35px;
-    opacity:.9;
-}
-
-.cloud:before,
-.cloud:after{
-    content:"";
-    position:absolute;
-    background:white;
-    border-radius:50%;
-}
-
-.cloud:before{
-    width:42px;
-    height:42px;
-    left:15px;
-    bottom:5px;
-}
-
-.cloud:after{
-    width:50px;
-    height:50px;
-    right:15px;
-    bottom:3px;
-}
-
-.house{
-    position:absolute;
-    width:125px;
-    height:100px;
-    bottom:75px;
-    left:45px;
-    background:#f8fafc;
-    border:3px solid #94a3b8;
-}
-
-.roof{
-    position:absolute;
-    width:150px;
-    height:80px;
-    background:#64748b;
-    transform:rotate(45deg);
-    top:-45px;
-    left:-15px;
-}
-
-.door{
-    position:absolute;
-    bottom:0;
-    left:45px;
-    width:35px;
-    height:57px;
-    background:#334155;
-}
-
-.tree{
-    position:absolute;
-    bottom:70px;
-    right:80px;
-    width:24px;
-    height:100px;
-    background:#92400e;
-}
-
-.tree:before{
-    content:"";
-    position:absolute;
-    width:90px;
-    height:90px;
-    background:#22c55e;
-    border-radius:50%;
-    left:-33px;
-    top:-55px;
-}
-
-.road{
-    position:absolute;
-    bottom:0;
-    left:0;
-    width:100%;
-    height:75px;
-    background:#64748b;
-}
-
-.road:after{
-    content:"";
-    position:absolute;
-    top:34px;
-    left:0;
-    width:100%;
-    border-top:6px dashed #f8fafc;
-}
-
-.float-report{
-    position:absolute;
-    right:-15px;
-    top:45px;
-    background:white;
-    padding:15px 18px;
-    border-radius:15px;
-    box-shadow:var(--shadow);
-    font-size:14px;
-}
-
-.float-report strong{
-    color:var(--primary);
-    display:block;
-}
-
-/* SECTION */
-section{
-    padding:90px 0;
-}
-
-.section-title{
-    text-align:center;
-    margin-bottom:45px;
-}
-
-.section-title span{
-    color:var(--primary);
-    font-size:14px;
-    font-weight:600;
-}
-
-.section-title h2{
-    font-size:36px;
-    margin:5px 0;
-}
-
-.section-title p{
-    color:var(--muted);
-}
-
-/* FEATURES */
-.features{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-}
-
-.feature-card{
-    background:white;
-    padding:27px;
-    border-radius:20px;
-    border:1px solid var(--border);
-    box-shadow:0 5px 20px rgba(15,23,42,.04);
-    transition:.25s;
-}
-
-.feature-card:hover{
-    transform:translateY(-6px);
-    box-shadow:var(--shadow);
-}
-
-.feature-icon{
-    width:52px;
-    height:52px;
-    display:grid;
-    place-items:center;
-    border-radius:15px;
-    background:var(--light);
-    font-size:24px;
-    margin-bottom:17px;
-}
-
-.feature-card h3{
-    margin-bottom:7px;
-}
-
-.feature-card p{
-    color:var(--muted);
-    font-size:14px;
-}
-
-/* REPORT */
-.report-section{
-    background:#f1f5f9;
-}
-
-.report-layout{
-    display:grid;
-    grid-template-columns:.8fr 1.2fr;
-    gap:30px;
-    align-items:start;
-}
-
-.info-card{
-    background:linear-gradient(145deg,#1d4ed8,#2563eb);
-    color:white;
-    padding:35px;
-    border-radius:25px;
-    min-height:480px;
-}
-
-.info-card h2{
-    font-size:30px;
-    margin-bottom:15px;
-}
-
-.info-card p{
-    opacity:.9;
-}
-
-.info-list{
-    margin-top:30px;
-    display:grid;
-    gap:18px;
-}
-
-.info-item{
-    display:flex;
-    gap:12px;
-    align-items:flex-start;
-}
-
-.info-item-icon{
-    width:34px;
-    height:34px;
-    display:grid;
-    place-items:center;
-    background:rgba(255,255,255,.15);
-    border-radius:10px;
-    flex-shrink:0;
-}
-
-.form-card{
-    background:white;
-    padding:32px;
-    border-radius:25px;
-    box-shadow:var(--shadow);
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px;
-}
-
-.form-group{
-    margin-bottom:18px;
-}
-
-.form-group.full{
-    grid-column:1/-1;
-}
-
-.form-group label{
-    display:block;
-    font-size:14px;
-    font-weight:500;
-    margin-bottom:7px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea{
-    width:100%;
-    border:1px solid var(--border);
-    padding:12px 14px;
-    border-radius:11px;
-    outline:none;
-    font-size:15px;
-    background:#fff;
-    transition:.2s;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
-    border-color:var(--primary);
-    box-shadow:0 0 0 3px #dbeafe;
-}
-
-textarea{
-    resize:vertical;
-    min-height:110px;
-}
-
-.file-box{
-    border:2px dashed #bfdbfe;
-    background:#f8fbff;
-    padding:20px;
-    border-radius:12px;
-    text-align:center;
-    cursor:pointer;
-}
-
-.file-box input{
-    display:none;
-}
-
-.preview{
-    display:none;
-    margin-top:12px;
-}
-
-.preview img{
-    width:120px;
-    height:90px;
-    object-fit:cover;
-    border-radius:10px;
-}
-
-/* TRACK */
-.track{
-    background:white;
-}
-
-.track-box{
-    max-width:700px;
-    margin:auto;
-    background:#f8fafc;
-    border:1px solid var(--border);
-    border-radius:22px;
-    padding:30px;
-}
-
-.search-row{
-    display:flex;
-    gap:10px;
-}
-
-.search-row input{
-    flex:1;
-    border:1px solid var(--border);
-    border-radius:11px;
-    padding:13px;
-    outline:none;
-}
-
-.status-result{
-    margin-top:25px;
-    display:none;
-    background:white;
-    border-radius:17px;
-    padding:25px;
-    border:1px solid var(--border);
-}
-
-.ticket-head{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.status-badge{
-    padding:5px 12px;
-    border-radius:20px;
-    font-size:13px;
-    background:#fef3c7;
-    color:#92400e;
-}
-
-.timeline{
-    position:relative;
-    margin-top:20px;
-}
-
-.timeline-item{
-    display:flex;
-    gap:15px;
-    margin-bottom:20px;
-    position:relative;
-}
-
-.timeline-dot{
-    width:16px;
-    height:16px;
-    border-radius:50%;
-    background:#cbd5e1;
-    margin-top:5px;
-    flex-shrink:0;
-}
-
-.timeline-item.active .timeline-dot{
-    background:var(--primary);
-    box-shadow:0 0 0 5px #dbeafe;
-}
-
-.timeline-item.done .timeline-dot{
-    background:var(--green);
-}
-
-.timeline-item:not(:last-child):after{
-    content:"";
-    position:absolute;
-    width:2px;
-    height:25px;
-    background:#e2e8f0;
-    left:7px;
-    top:21px;
-}
-
-.timeline-item strong{
-    display:block;
-}
-
-.timeline-item small{
-    color:var(--muted);
-}
-
-/* DASHBOARD */
-.dashboard{
-    background:#f1f5f9;
-}
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-    margin-bottom:30px;
-}
-
-.stat{
-    background:white;
-    padding:25px;
-    border-radius:18px;
-    border:1px solid var(--border);
-}
-
-.stat-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.stat-icon{
-    width:43px;
-    height:43px;
-    display:grid;
-    place-items:center;
-    background:var(--light);
-    border-radius:12px;
-}
-
-.stat h3{
-    font-size:32px;
-    margin-top:10px;
-}
-
-.stat p{
-    color:var(--muted);
-    font-size:14px;
-}
-
-.dashboard-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.dash-card{
-    background:white;
-    padding:25px;
-    border-radius:20px;
-    border:1px solid var(--border);
-}
-
-.dash-card h3{
-    margin-bottom:20px;
-}
-
-.bar{
-    margin-bottom:16px;
-}
-
-.bar-title{
-    display:flex;
-    justify-content:space-between;
-    font-size:14px;
-    margin-bottom:5px;
-}
-
-.bar-bg{
-    height:10px;
-    background:#e2e8f0;
-    border-radius:10px;
-    overflow:hidden;
-}
-
-.bar-fill{
-    height:100%;
-    background:var(--primary);
-    border-radius:10px;
-}
-
-/* MAP */
-.map-section{
-    background:white;
-}
-
-.map{
-    height:430px;
-    border-radius:25px;
-    position:relative;
-    overflow:hidden;
-    background:
-        linear-gradient(30deg,transparent 48%,#cbd5e1 49%,#cbd5e1 52%,transparent 53%),
-        linear-gradient(-25deg,transparent 48%,#cbd5e1 49%,#cbd5e1 52%,transparent 53%),
-        #e2e8f0;
-    background-size:180px 150px;
-    border:1px solid #cbd5e1;
-}
-
-.map-label{
-    position:absolute;
-    background:white;
-    padding:8px 13px;
-    border-radius:10px;
-    box-shadow:0 4px 15px rgba(0,0,0,.12);
-    font-size:13px;
-}
-
-.map-label.one{top:30px;left:30px;}
-.map-label.two{bottom:40px;right:30px;}
-.map-label.three{top:50%;left:45%;}
-
-.pin{
-    position:absolute;
-    width:42px;
-    height:42px;
-    border-radius:50% 50% 50% 0;
-    transform:rotate(-45deg);
-    display:grid;
-    place-items:center;
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
-    cursor:pointer;
-}
-
-.pin span{
-    transform:rotate(45deg);
-    color:white;
-    font-size:18px;
-}
-
-.pin.red{background:var(--red);top:35%;left:25%;}
-.pin.orange{background:var(--orange);top:55%;left:62%;}
-.pin.blue{background:var(--primary);top:25%;left:75%;}
-.pin.green{background:var(--green);top:68%;left:35%;}
-
-.map-legend{
-    position:absolute;
-    bottom:18px;
-    left:18px;
-    background:white;
-    padding:12px 16px;
-    border-radius:13px;
-    box-shadow:var(--shadow);
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
-    font-size:12px;
-}
-
-.legend-item{
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-
-.legend-dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-}
-
-/* ABOUT */
-.about{
-    background:#f8fafc;
-}
-
-.about-box{
-    background:white;
-    border-radius:25px;
-    padding:45px;
-    box-shadow:var(--shadow);
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:50px;
-}
-
-.about-box h2{
-    font-size:30px;
-    margin-bottom:12px;
-}
-
-.about-box p{
-    color:var(--muted);
-}
-
-.steps{
-    display:grid;
-    gap:15px;
-}
-
-.step{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.step-number{
-    width:40px;
-    height:40px;
-    display:grid;
-    place-items:center;
-    background:var(--light);
-    color:var(--primary);
-    border-radius:50%;
-    font-weight:600;
-}
-
-/* FOOTER */
-footer{
-    background:#0f172a;
-    color:white;
-    padding:40px 0 25px;
-}
-
-.footer-grid{
-    display:grid;
-    grid-template-columns:2fr 1fr 1fr;
-    gap:30px;
-}
-
-.footer-logo{
-    color:white;
-    margin-bottom:10px;
-}
-
-footer p{
-    color:#94a3b8;
-    font-size:14px;
-}
-
-footer h4{
-    margin-bottom:10px;
-}
-
-footer a{
-    display:block;
-    color:#94a3b8;
-    margin:5px 0;
-    font-size:14px;
-}
-
-.copyright{
-    border-top:1px solid #1e293b;
-    margin-top:30px;
-    padding-top:20px;
-    text-align:center;
-    color:#64748b;
-    font-size:13px;
-}
-
-/* MODAL */
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(15,23,42,.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:2000;
-    padding:20px;
-}
-
-.modal.show{
-    display:flex;
-}
-
-.modal-card{
-    background:white;
-    max-width:500px;
-    width:100%;
-    border-radius:22px;
-    padding:30px;
-    text-align:center;
-    animation:pop .25s ease;
-}
-
-@keyframes pop{
-    from{transform:scale(.9);opacity:0}
-    to{transform:scale(1);opacity:1}
-}
-
-.success-icon{
-    width:70px;
-    height:70px;
-    background:#dcfce7;
-    color:var(--green);
-    border-radius:50%;
-    display:grid;
-    place-items:center;
-    font-size:35px;
-    margin:0 auto 15px;
-}
-
-.ticket-code{
-    background:#eff6ff;
-    color:var(--primary);
-    padding:12px;
-    border-radius:10px;
-    font-size:21px;
-    font-weight:600;
-    margin:18px 0;
-}
-
-/* TO TOP */
-.top{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    width:45px;
-    height:45px;
-    border:0;
-    border-radius:50%;
-    background:var(--primary);
-    color:white;
-    cursor:pointer;
-    box-shadow:var(--shadow);
-    display:none;
-}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-    .features{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .hero-grid,
-    .report-layout,
-    .about-box{
-        grid-template-columns:1fr;
-    }
-
-    .dashboard-grid{
-        grid-template-columns:1fr;
-    }
-
-    .hero-card{
-        max-width:600px;
-        width:100%;
-        margin:auto;
-    }
-}
-
-@media(max-width:700px){
-    .nav-links{
-        position:absolute;
-        top:72px;
-        left:0;
-        width:100%;
-        background:white;
-        flex-direction:column;
-        padding:20px;
-        display:none;
-        box-shadow:0 10px 20px rgba(0,0,0,.06);
-    }
-
-    .nav-links.active{
-        display:flex;
-    }
-
-    .menu-btn{
-        display:block;
-    }
-
-    .nav-btn{
-        width:100%;
-        text-align:center;
-    }
-
-    .features,
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .form-group.full{
-        grid-column:auto;
-    }
-
-    .hero{
-        padding-top:120px;
-    }
-
-    section{
-        padding:65px 0;
-    }
-
-    .section-title h2{
-        font-size:29px;
-    }
-
-    .about-box{
-        padding:28px;
-    }
-
-    .search-row{
-        flex-direction:column;
-    }
-
-    .footer-grid{
-        grid-template-columns:1fr;
-    }
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-soft:#eff6ff;
+  --text:#0f172a;--muted:#64748b;--line:#e2e8f0;--bg:#f8fafc;--white:#fff;
+  --success:#16a34a;--warning:#f59e0b;--danger:#dc2626;--orange:#ea580c;
+  --shadow:0 18px 50px rgba(15,23,42,.08);--radius:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Kanit",sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+a{text-decoration:none;color:inherit}
+.container{width:min(1160px,92%);margin:auto}
+.navbar{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(226,232,240,.8)}
+.nav-inner{height:72px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:22px;color:var(--primary)}
+.logo-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#60a5fa);display:grid;place-items:center;color:#fff;box-shadow:0 8px 22px rgba(37,99,235,.28)}
+.nav-links{display:flex;gap:7px;align-items:center}
+.nav-links a{padding:9px 14px;border-radius:12px;color:#475569;font-size:15px}
+.nav-links a:hover{background:var(--primary-soft);color:var(--primary)}
+.menu-btn{display:none;background:#eff6ff;color:var(--primary);padding:9px 12px;border-radius:12px}
+.hero{padding:76px 0 70px;background:radial-gradient(circle at 90% 10%,#dbeafe 0,transparent 30%),linear-gradient(180deg,#fff 0,#f8fbff 100%)}
+.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:55px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#eff6ff;color:#1d4ed8;border:1px solid #dbeafe;border-radius:999px;padding:7px 13px;font-size:14px;margin-bottom:18px}
+.hero h1{font-size:clamp(40px,6vw,68px);line-height:1.08;letter-spacing:-1px;margin-bottom:20px}
+.hero h1 span{color:var(--primary)}
+.hero p{font-size:18px;color:var(--muted);max-width:650px;margin-bottom:30px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 20px;border-radius:14px;font-weight:600;transition:.2s}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 10px 25px rgba(37,99,235,.22)}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px)}
+.btn-light{background:#fff;border:1px solid var(--line);color:#334155}
+.btn-light:hover{border-color:#bfdbfe;background:#eff6ff}
+.hero-card{background:#fff;border:1px solid #dbeafe;border-radius:30px;padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero-card:before{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:#dbeafe;right:-90px;top:-90px}
+.dashboard-preview{position:relative;background:#f8fafc;border:1px solid var(--line);border-radius:22px;padding:16px}
+.preview-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.preview-title{font-weight:600}.live{font-size:12px;color:#15803d;background:#dcfce7;padding:5px 9px;border-radius:999px}
+.preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mini-stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px}.mini-stat b{font-size:22px;display:block}.mini-stat small{color:var(--muted)}
+.mock-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);padding:11px;border-radius:13px;margin-top:10px}
+.dot{width:10px;height:10px;border-radius:50%}.blue{background:#2563eb}.green{background:#16a34a}.orange{background:#ea580c}
+.section{padding:78px 0}.section.alt{background:#fff}
+.section-head{text-align:center;margin-bottom:38px}.section-head h2{font-size:34px;margin-bottom:8px}.section-head p{color:var(--muted)}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feature{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:25px;box-shadow:0 10px 30px rgba(15,23,42,.04);transition:.2s}
+.feature:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.icon{width:48px;height:48px;border-radius:15px;background:var(--primary-soft);display:grid;place-items:center;font-size:23px;margin-bottom:15px}
+.feature h3{margin-bottom:5px}.feature p{color:var(--muted);font-size:14px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:26px;padding:28px;box-shadow:var(--shadow)}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}.full{grid-column:1/-1}
+.field label{display:block;font-weight:500;margin-bottom:7px}.required{color:var(--danger)}
+.field input,.field select,.field textarea{width:100%;border:1px solid #cbd5e1;border-radius:13px;padding:12px 14px;outline:none;background:#fff;transition:.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#60a5fa;box-shadow:0 0 0 4px #dbeafe}
+.field textarea{min-height:125px;resize:vertical}
+.location-row{display:flex;gap:9px}.location-row input{flex:1}
+.upload{border:1.5px dashed #93c5fd;background:#f8fbff;padding:18px;border-radius:15px;text-align:center}
+.upload input{border:0;padding:0}
+.preview-img{max-width:180px;max-height:130px;border-radius:12px;margin-top:10px;display:none}
+.urgency-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.urgency{position:relative}.urgency input{position:absolute;opacity:0}.urgency label{display:block;text-align:center;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fff;cursor:pointer;font-size:14px}
+.urgency input:checked+label{border-color:var(--primary);background:#eff6ff;box-shadow:0 0 0 3px #dbeafe}
+.u-low{color:#15803d}.u-mid{color:#a16207}.u-high{color:#c2410c}.u-critical{color:#b91c1c}
+.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+.result{display:none;margin-top:18px;padding:18px;border-radius:16px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.ticket{font-size:27px;font-weight:700;letter-spacing:1px;color:#166534}
+.track-box{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:700px;margin:auto}
+.track-box input{border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.status-card{display:none;margin-top:25px}
+.status-top{display:flex;justify-content:space-between;gap:15px;align-items:start}
+.status-badge{display:inline-flex;padding:6px 11px;border-radius:999px;font-size:13px;font-weight:500}
+.status-pending{background:#fef3c7;color:#92400e}.status-received{background:#dbeafe;color:#1d4ed8}.status-progress{background:#ffedd5;color:#c2410c}.status-done{background:#dcfce7;color:#166534}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:28px}.step{text-align:center;position:relative}.step:before{content:"";height:4px;background:#e2e8f0;position:absolute;top:12px;left:0;right:0;z-index:0}.step:first-child:before{left:50%}.step:last-child:before{right:50%}.step-circle{position:relative;z-index:1;margin:auto;width:25px;height:25px;border-radius:50%;background:#e2e8f0;border:5px solid #fff}.step.active .step-circle{background:var(--primary)}.step span{display:block;font-size:12px;margin-top:7px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px}.stat small{color:var(--muted)}.stat b{font-size:30px;display:block}.stat .stat-icon{float:right;font-size:24px}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.summary-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px}.summary-card h3{margin-bottom:14px}.bar-row{margin:12px 0}.bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}.bar-bg{height:9px;background:#e2e8f0;border-radius:99px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:99px}
+.table-wrap{overflow:auto;margin-top:18px}.table{width:100%;border-collapse:collapse;min-width:800px}.table th,.table td{text-align:left;padding:13px;border-bottom:1px solid var(--line);font-size:14px}.table th{color:#475569;background:#f8fafc}.pill{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:12px}.priority-low{background:#dcfce7;color:#166534}.priority-mid{background:#fef3c7;color:#92400e}.priority-high{background:#ffedd5;color:#c2410c}.priority-critical{background:#fee2e2;color:#b91c1c}
+#map{height:430px;border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.admin-login{max-width:480px;margin:auto}.admin-area{display:none}.admin-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:15px;padding:13px 15px;font-size:14px;margin-bottom:18px}
+.footer{background:#0f172a;color:#cbd5e1;padding:45px 0}.footer-grid{display:flex;justify-content:space-between;gap:20px}.footer b{color:#fff}.toast{position:fixed;right:20px;bottom:20px;z-index:2000;background:#0f172a;color:#fff;padding:13px 17px;border-radius:13px;box-shadow:var(--shadow);display:none}
+.loading{opacity:.65;pointer-events:none}
+.empty{text-align:center;color:var(--muted);padding:30px}
+.hidden{display:none!important}
+@media(max-width:850px){
+ .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:#fff;padding:10px 4%;border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch}
+ .nav-links.open{display:flex}.menu-btn{display:block}
+ .hero-grid{grid-template-columns:1fr}.hero{padding-top:50px}.features{grid-template-columns:1fr}.form-grid,.summary-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+ .hero h1{font-size:42px}.section{padding:55px 0}.panel{padding:18px}.urgency-grid{grid-template-columns:repeat(2,1fr)}.track-box{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.footer-grid{flex-direction:column}
 }
 </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
-    <div class="container nav-inner">
-        <a href="#home" class="logo">
-            <span class="logo-icon">🏘️</span>
-            CommunityFix
-        </a>
-
-        <button class="menu-btn" onclick="toggleMenu()">☰</button>
-
-        <div class="nav-links" id="navLinks">
-            <a href="#home">หน้าแรก</a>
-            <a href="#report">แจ้งปัญหา</a>
-            <a href="#track">ติดตามเรื่อง</a>
-            <a href="#dashboard">Dashboard</a>
-            <a href="#map">แผนที่</a>
-            <a href="#report" class="nav-btn">🚨 แจ้งปัญหา</a>
-        </div>
+  <div class="container nav-inner">
+    <a class="logo" href="#home"><span class="logo-mark">✓</span>CommunityFix</a>
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#home">หน้าแรก</a>
+      <a href="#report">แจ้งปัญหา</a>
+      <a href="#track">ติดตามเรื่อง</a>
+      <a href="#dashboard">สรุปข้อมูล</a>
+      <a href="#map-section">แผนที่</a>
+      <a href="#admin">Admin</a>
     </div>
+  </div>
 </nav>
 
-<!-- HERO -->
-<header class="hero" id="home">
-    <div class="container hero-grid">
-
-        <div>
-            <div class="badge">🌱 เพื่อชุมชนที่น่าอยู่กว่าเดิม</div>
-
-            <h1>
-                แจ้งปัญหาชุมชน<br>
-                <span>ง่าย ติดตามได้</span>
-            </h1>
-
-            <p>
-                CommunityFix คือระบบแจ้งปัญหาชุมชนออนไลน์
-                ที่ช่วยให้ประชาชนสามารถแจ้งปัญหา
-                ระบุตำแหน่ง และติดตามความคืบหน้าได้อย่างสะดวก
-            </p>
-
-            <div class="hero-buttons">
-                <a href="#report" class="btn btn-primary">
-                    🚨 แจ้งปัญหาทันที
-                </a>
-
-                <a href="#track" class="btn btn-outline">
-                    🔎 ติดตามปัญหา
-                </a>
-            </div>
-        </div>
-
-        <div class="hero-card">
-            <div class="community-scene">
-                <div class="sun"></div>
-                <div class="cloud"></div>
-                <div class="house">
-                    <div class="roof"></div>
-                    <div class="door"></div>
-                </div>
-                <div class="tree"></div>
-                <div class="road"></div>
-            </div>
-
-            <div class="float-report">
-                <strong>✓ แก้ไขแล้ว</strong>
-                ถนนชำรุด หมู่บ้าน 3
-            </div>
-        </div>
-
+<main>
+<section class="hero" id="home">
+ <div class="container hero-grid">
+  <div>
+   <span class="badge">🌱 Community • Report • Fix</span>
+   <h1>แจ้งปัญหาชุมชน<br><span>ง่ายขึ้นในที่เดียว</span></h1>
+   <p>CommunityFix ช่วยให้ประชาชนแจ้งปัญหาในชุมชน พร้อมระบุสถานที่ รูปภาพ และระดับความเร่งด่วน เพื่อให้ติดตามและจัดการปัญหาได้อย่างเป็นระบบ</p>
+   <div class="actions">
+    <a class="btn btn-primary" href="#report">📝 แจ้งปัญหาทันที</a>
+    <a class="btn btn-light" href="#track">🔎 ติดตามเรื่อง</a>
+   </div>
+  </div>
+  <div class="hero-card">
+   <div class="dashboard-preview">
+    <div class="preview-head"><div class="preview-title">Community Dashboard</div><span class="live">● LIVE</span></div>
+    <div class="preview-grid">
+      <div class="mini-stat"><b id="heroTotal">0</b><small>เรื่องทั้งหมด</small></div>
+      <div class="mini-stat"><b id="heroPending">0</b><small>รอตรวจสอบ</small></div>
+      <div class="mini-stat"><b id="heroDone">0</b><small>แก้ไขแล้ว</small></div>
     </div>
-</header>
-
-<!-- FEATURES -->
-<section>
-    <div class="container">
-
-        <div class="section-title">
-            <span>FEATURES</span>
-            <h2>ระบบช่วยอะไรได้บ้าง?</h2>
-            <p>ออกแบบมาให้ใช้งานง่ายสำหรับทุกคนในชุมชน</p>
-        </div>
-
-        <div class="features">
-
-            <div class="feature-card">
-                <div class="feature-icon">📝</div>
-                <h3>แจ้งปัญหา</h3>
-                <p>
-                    แจ้งปัญหาพร้อมรายละเอียดและรูปภาพ
-                    ได้จากทุกที่ทุกเวลา
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">📍</div>
-                <h3>ระบุตำแหน่ง</h3>
-                <p>
-                    ระบุสถานที่เกิดปัญหา
-                    เพื่อช่วยให้เจ้าหน้าที่เข้าถึงจุดเกิดเหตุ
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🔎</div>
-                <h3>ติดตามสถานะ</h3>
-                <p>
-                    ตรวจสอบความคืบหน้าของเรื่อง
-                    ด้วยเลขที่แจ้งปัญหา
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3>ข้อมูลสถิติ</h3>
-                <p>
-                    ดูภาพรวมปัญหาที่เกิดขึ้น
-                    เพื่อช่วยวางแผนพัฒนาชุมชน
-                </p>
-            </div>
-
-        </div>
-    </div>
+    <div class="mock-row"><span class="dot orange"></span><div><b>ระดับความเร่งด่วน</b><br><small>แยกปัญหาสำคัญเพื่อจัดลำดับการแก้ไข</small></div></div>
+    <div class="mock-row"><span class="dot blue"></span><div><b>ข้อมูลรวมศูนย์</b><br><small>บันทึกข้อมูลเข้าสู่ Google Sheets</small></div></div>
+    <div class="mock-row"><span class="dot green"></span><div><b>ติดตามสถานะ</b><br><small>ตรวจสอบความคืบหน้าด้วยเลขแจ้ง</small></div></div>
+   </div>
+  </div>
+ </div>
 </section>
 
-<!-- REPORT -->
-<section class="report-section" id="report">
-    <div class="container">
-
-        <div class="section-title">
-            <span>REPORT A PROBLEM</span>
-            <h2>แจ้งปัญหาชุมชน</h2>
-            <p>กรอกข้อมูลด้านล่างเพื่อส่งเรื่องแจ้งปัญหา</p>
-        </div>
-
-        <div class="report-layout">
-
-            <div class="info-card">
-                <h2>พบปัญหาในชุมชน?</h2>
-                <p>
-                    ช่วยกันแจ้งปัญหาเล็ก ๆ
-                    เพื่อสร้างชุมชนที่น่าอยู่สำหรับทุกคน
-                </p>
-
-                <div class="info-list">
-
-                    <div class="info-item">
-                        <div class="info-item-icon">1</div>
-                        <div>
-                            <strong>ถ่ายภาพปัญหา</strong>
-                            <p>แนบรูปภาพเพื่อให้เห็นปัญหาชัดเจน</p>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-item-icon">2</div>
-                        <div>
-                            <strong>กรอกรายละเอียด</strong>
-                            <p>ระบุประเภทและสถานที่เกิดปัญหา</p>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-item-icon">3</div>
-                        <div>
-                            <strong>ส่งเรื่อง</strong>
-                            <p>ระบบจะสร้างเลขที่แจ้งให้อัตโนมัติ</p>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-item-icon">4</div>
-                        <div>
-                            <strong>ติดตามผล</strong>
-                            <p>นำเลขที่แจ้งไปตรวจสอบสถานะได้</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="form-card">
-
-                <form id="reportForm">
-
-                    <div class="form-grid">
-
-                        <div class="form-group">
-                            <label>👤 ชื่อผู้แจ้ง</label>
-                            <input
-                                type="text"
-                                id="reporter"
-                                placeholder="กรอกชื่อของคุณ"
-                                required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>🏷️ ประเภทปัญหา</label>
-                            <select id="category" required>
-                                <option value="">-- เลือกประเภท --</option>
-                                <option>ถนนชำรุด</option>
-                                <option>ขยะและสิ่งสกปรก</option>
-                                <option>ไฟฟ้า / ไฟถนน</option>
-                                <option>น้ำประปา</option>
-                                <option>น้ำท่วม</option>
-                                <option>ท่อระบายน้ำ</option>
-                                <option>พื้นที่สาธารณะ</option>
-                                <option>อื่น ๆ</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group full">
-                            <label>📍 สถานที่เกิดปัญหา</label>
-                            <input
-                                type="text"
-                                id="location"
-                                placeholder="เช่น บริเวณหน้าตลาดชุมชน"
-                                required>
-                        </div>
-
-                        <div class="form-group full">
-                            <label>📝 รายละเอียดปัญหา</label>
-                            <textarea
-                                id="description"
-                                placeholder="อธิบายรายละเอียดของปัญหา..."
-                                required></textarea>
-                        </div>
-
-                        <div class="form-group full">
-                            <label>📸 รูปภาพประกอบ</label>
-
-                            <label class="file-box">
-                                <input
-                                    type="file"
-                                    id="photo"
-                                    accept="image/*">
-                                <div>📷 คลิกเพื่อเลือกรูปภาพ</div>
-                                <small style="color:#64748b">
-                                    รองรับ JPG, PNG
-                                </small>
-
-                                <div class="preview" id="preview">
-                                    <img id="previewImg" alt="ภาพตัวอย่าง">
-                                </div>
-                            </label>
-                        </div>
-
-                    </div>
-
-                    <button class="btn btn-primary" style="width:100%">
-                        🚨 ส่งเรื่องแจ้งปัญหา
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-    </div>
+<section class="section">
+ <div class="container">
+  <div class="section-head"><h2>ระบบช่วยอะไรได้บ้าง?</h2><p>ออกแบบให้ใช้งานง่ายทั้งประชาชนและผู้ดูแลระบบ</p></div>
+  <div class="features">
+   <div class="feature"><div class="icon">📝</div><h3>แจ้งปัญหาออนไลน์</h3><p>กรอกข้อมูล แนบภาพ และระบุสถานที่ผ่านเว็บไซต์ได้ทันที</p></div>
+   <div class="feature"><div class="icon">🚨</div><h3>จัดระดับความเร่งด่วน</h3><p>ช่วยให้ผู้ดูแลเห็นปัญหาที่ควรจัดการก่อนอย่างชัดเจน</p></div>
+   <div class="feature"><div class="icon">📊</div><h3>สรุปข้อมูลอัตโนมัติ</h3><p>รวบรวมรายการแจ้งเข้ามาและสรุปตามประเภท สถานะ และความเร่งด่วน</p></div>
+  </div>
+ </div>
 </section>
 
-<!-- TRACK -->
-<section class="track" id="track">
-    <div class="container">
-
-        <div class="section-title">
-            <span>TRACK REPORT</span>
-            <h2>ติดตามสถานะปัญหา</h2>
-            <p>กรอกเลขที่แจ้งปัญหาของคุณ</p>
-        </div>
-
-        <div class="track-box">
-
-            <div class="search-row">
-                <input
-                    type="text"
-                    id="trackInput"
-                    placeholder="เช่น CF-2026-001">
-                <button
-                    class="btn btn-primary"
-                    onclick="trackReport()">
-                    🔎 ค้นหา
-                </button>
-            </div>
-
-            <div class="status-result" id="statusResult"></div>
-
-        </div>
-
+<section class="section alt" id="report">
+ <div class="container">
+  <div class="section-head"><h2>แจ้งปัญหาชุมชน</h2><p>กรอกข้อมูลให้ครบเพื่อให้เจ้าหน้าที่ตรวจสอบได้รวดเร็วยิ่งขึ้น</p></div>
+  <div class="panel">
+   <div class="notice">💡 หลังส่งข้อมูล ระบบจะสร้าง <b>เลขที่แจ้งปัญหา</b> ให้สำหรับใช้ติดตามสถานะ</div>
+   <form id="reportForm">
+    <div class="form-grid">
+      <div class="field"><label>ชื่อผู้แจ้ง <span class="required">*</span></label><input id="name" required placeholder="กรอกชื่อ"></div>
+      <div class="field"><label>เบอร์โทรศัพท์</label><input id="phone" type="tel" placeholder="สำหรับติดต่อกลับ (ถ้ามี)"></div>
+      <div class="field"><label>ประเภทปัญหา <span class="required">*</span></label>
+       <select id="category" required>
+        <option value="">-- เลือกประเภท --</option>
+        <option>ถนนและทางเท้า</option><option>ไฟฟ้าและแสงสว่าง</option><option>ขยะและความสะอาด</option>
+        <option>น้ำประปาและน้ำท่วม</option><option>ต้นไม้และพื้นที่สาธารณะ</option><option>ความปลอดภัย</option><option>อื่น ๆ</option>
+       </select>
+      </div>
+      <div class="field"><label>สถานที่เกิดปัญหา <span class="required">*</span></label>
+       <div class="location-row"><input id="location" required placeholder="เช่น หน้าโรงเรียน..."><button type="button" class="btn btn-light" id="gpsBtn">📍 GPS</button></div>
+       <small id="gpsText" style="color:#64748b"></small>
+      </div>
+      <div class="field full"><label>ระดับความเร่งด่วน <span class="required">*</span></label>
+       <div class="urgency-grid">
+        <div class="urgency"><input id="u1" name="urgency" type="radio" value="ต่ำ" required><label for="u1" class="u-low">🟢 ต่ำ</label></div>
+        <div class="urgency"><input id="u2" name="urgency" type="radio" value="ปานกลาง"><label for="u2" class="u-mid">🟡 ปานกลาง</label></div>
+        <div class="urgency"><input id="u3" name="urgency" type="radio" value="สูง"><label for="u3" class="u-high">🟠 สูง</label></div>
+        <div class="urgency"><input id="u4" name="urgency" type="radio" value="วิกฤต"><label for="u4" class="u-critical">🔴 วิกฤต</label></div>
+       </div>
+      </div>
+      <div class="field full"><label>รายละเอียดปัญหา <span class="required">*</span></label><textarea id="description" required placeholder="อธิบายปัญหาที่พบ เช่น จุดเกิดเหตุ ลักษณะปัญหา หรือข้อมูลเพิ่มเติม"></textarea></div>
+      <div class="field full"><label>รูปภาพประกอบ</label><div class="upload"><input id="image" type="file" accept="image/*"><br><small>แนะนำภาพที่เห็นปัญหาชัดเจน ขนาดไม่เกิน 5 MB</small><br><img id="previewImg" class="preview-img"></div></div>
     </div>
+    <input type="hidden" id="latitude"><input type="hidden" id="longitude">
+    <div class="form-actions"><button type="reset" class="btn btn-light">ล้างข้อมูล</button><button class="btn btn-primary" id="submitBtn">🚀 ส่งแจ้งปัญหา</button></div>
+   </form>
+   <div class="result" id="submitResult"><div>ส่งข้อมูลสำเร็จ 🎉</div><div class="ticket" id="ticketResult">CF-2026-000000</div><div>กรุณาจดเลขนี้ไว้เพื่อใช้ติดตามสถานะ</div></div>
+  </div>
+ </div>
 </section>
 
-<!-- DASHBOARD -->
-<section class="dashboard" id="dashboard">
-    <div class="container">
-
-        <div class="section-title">
-            <span>COMMUNITY DASHBOARD</span>
-            <h2>ภาพรวมปัญหาชุมชน</h2>
-            <p>ข้อมูลสถิติจากระบบ CommunityFix</p>
-        </div>
-
-        <div class="stats">
-
-            <div class="stat">
-                <div class="stat-top">
-                    <p>แจ้งปัญหาทั้งหมด</p>
-                    <div class="stat-icon">📋</div>
-                </div>
-                <h3 id="totalStat">128</h3>
-                <p>รายการ</p>
-            </div>
-
-            <div class="stat">
-                <div class="stat-top">
-                    <p>รอตรวจสอบ</p>
-                    <div class="stat-icon">⏳</div>
-                </div>
-                <h3 id="waitingStat">7</h3>
-                <p>รายการ</p>
-            </div>
-
-            <div class="stat">
-                <div class="stat-top">
-                    <p>กำลังดำเนินการ</p>
-                    <div class="stat-icon">🔧</div>
-                </div>
-                <h3 id="workingStat">32</h3>
-                <p>รายการ</p>
-            </div>
-
-            <div class="stat">
-                <div class="stat-top">
-                    <p>แก้ไขแล้ว</p>
-                    <div class="stat-icon">✅</div>
-                </div>
-                <h3 id="doneStat">89</h3>
-                <p>รายการ</p>
-            </div>
-
-        </div>
-
-        <div class="dashboard-grid">
-
-            <div class="dash-card">
-                <h3>📊 ประเภทปัญหาที่พบบ่อย</h3>
-
-                <div class="bar">
-                    <div class="bar-title">
-                        <span>ถนนชำรุด</span>
-                        <span>38%</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" style="width:38%"></div>
-                    </div>
-                </div>
-
-                <div class="bar">
-                    <div class="bar-title">
-                        <span>ขยะและสิ่งสกปรก</span>
-                        <span>25%</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" style="width:25%"></div>
-                    </div>
-                </div>
-
-                <div class="bar">
-                    <div class="bar-title">
-                        <span>ไฟฟ้า / ไฟถนน</span>
-                        <span>18%</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" style="width:18%"></div>
-                    </div>
-                </div>
-
-                <div class="bar">
-                    <div class="bar-title">
-                        <span>น้ำประปา</span>
-                        <span>12%</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" style="width:12%"></div>
-                    </div>
-                </div>
-
-                <div class="bar">
-                    <div class="bar-title">
-                        <span>อื่น ๆ</span>
-                        <span>7%</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" style="width:7%"></div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="dash-card">
-                <h3>⚡ ประสิทธิภาพการแก้ไข</h3>
-
-                <div style="text-align:center;padding:15px">
-                    <div style="
-                        width:180px;
-                        height:180px;
-                        border-radius:50%;
-                        margin:auto;
-                        display:grid;
-                        place-items:center;
-                        background:conic-gradient(#2563eb 0 82%,#e2e8f0 82% 100%);
-                    ">
-                        <div style="
-                            width:135px;
-                            height:135px;
-                            border-radius:50%;
-                            background:white;
-                            display:grid;
-                            place-items:center;
-                        ">
-                            <div>
-                                <strong style="font-size:30px">82%</strong>
-                                <small style="display:block;color:#64748b">
-                                    สำเร็จ
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p style="margin-top:18px;color:#64748b">
-                        สัดส่วนปัญหาที่ได้รับการแก้ไขแล้ว
-                    </p>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
+<section class="section" id="track">
+ <div class="container">
+  <div class="section-head"><h2>ติดตามสถานะการแจ้ง</h2><p>กรอกเลขที่แจ้งเพื่อดูความคืบหน้าของเรื่อง</p></div>
+  <div class="panel">
+   <div class="track-box"><input id="trackInput" placeholder="เช่น CF-2026-123456"><button class="btn btn-primary" id="trackBtn">🔎 ค้นหา</button></div>
+   <div class="status-card" id="statusCard">
+    <div class="status-top"><div><small style="color:#64748b">เลขที่แจ้ง</small><h3 id="trackTicket"></h3><p id="trackCategory" style="color:#64748b"></p></div><span class="status-badge" id="trackStatus"></span></div>
+    <div style="margin-top:15px"><b>สถานที่:</b> <span id="trackLocation"></span><br><b>ความเร่งด่วน:</b> <span id="trackUrgency"></span></div>
+    <div class="timeline" id="timeline"></div>
+   </div>
+  </div>
+ </div>
 </section>
 
-<!-- MAP -->
-<section class="map-section" id="map">
-    <div class="container">
-
-        <div class="section-title">
-            <span>PROBLEM MAP</span>
-            <h2>แผนที่ปัญหาในชุมชน</h2>
-            <p>ตัวอย่างตำแหน่งปัญหาที่มีการแจ้งเข้ามา</p>
-        </div>
-
-        <div class="map">
-
-            <div class="map-label one">
-                🏫 โรงเรียน
-            </div>
-
-            <div class="map-label two">
-                🏪 ตลาดชุมชน
-            </div>
-
-            <div class="map-label three">
-                🏘️ ชุมชนกลาง
-            </div>
-
-            <div
-                class="pin red"
-                title="ถนนชำรุด"
-                onclick="mapAlert('ถนนชำรุด')">
-                <span>!</span>
-            </div>
-
-            <div
-                class="pin orange"
-                title="ขยะล้นถัง"
-                onclick="mapAlert('ขยะและสิ่งสกปรก')">
-                <span>!</span>
-            </div>
-
-            <div
-                class="pin blue"
-                title="ไฟถนนเสีย"
-                onclick="mapAlert('ไฟฟ้า / ไฟถนน')">
-                <span>!</span>
-            </div>
-
-            <div
-                class="pin green"
-                title="แก้ไขแล้ว"
-                onclick="mapAlert('ปัญหาที่แก้ไขแล้ว')">
-                <span>✓</span>
-            </div>
-
-            <div class="map-legend">
-                <div class="legend-item">
-                    <span class="legend-dot" style="background:#ef4444"></span>
-                    ถนน
-                </div>
-
-                <div class="legend-item">
-                    <span class="legend-dot" style="background:#f59e0b"></span>
-                    ขยะ
-                </div>
-
-                <div class="legend-item">
-                    <span class="legend-dot" style="background:#2563eb"></span>
-                    ไฟฟ้า
-                </div>
-
-                <div class="legend-item">
-                    <span class="legend-dot" style="background:#16a34a"></span>
-                    แก้ไขแล้ว
-                </div>
-            </div>
-
-        </div>
-
-    </div>
+<section class="section alt" id="dashboard">
+ <div class="container">
+  <div class="section-head"><h2>สรุปข้อมูลปัญหา</h2><p>ภาพรวมรายการแจ้งจากข้อมูลในระบบ</p></div>
+  <div class="stats">
+   <div class="stat"><span class="stat-icon">📋</span><small>เรื่องทั้งหมด</small><b id="totalStat">0</b></div>
+   <div class="stat"><span class="stat-icon">⏳</span><small>รอตรวจสอบ</small><b id="pendingStat">0</b></div>
+   <div class="stat"><span class="stat-icon">🔧</span><small>กำลังดำเนินการ</small><b id="progressStat">0</b></div>
+   <div class="stat"><span class="stat-icon">✅</span><small>แก้ไขแล้ว</small><b id="doneStat">0</b></div>
+  </div>
+  <div class="summary-grid">
+   <div class="summary-card"><h3>🚨 ตามระดับความเร่งด่วน</h3><div id="urgencySummary"></div></div>
+   <div class="summary-card"><h3>📂 ตามประเภทปัญหา</h3><div id="categorySummary"></div></div>
+  </div>
+ </div>
 </section>
 
-<!-- ABOUT -->
-<section class="about">
-    <div class="container">
-
-        <div class="about-box">
-
-            <div>
-                <span style="color:#2563eb;font-weight:600">
-                    ABOUT COMMUNITYFIX
-                </span>
-
-                <h2>เทคโนโลยีเพื่อชุมชนที่น่าอยู่</h2>
-
-                <p>
-                    CommunityFix ถูกออกแบบขึ้นเพื่อเป็นช่องทางกลาง
-                    ระหว่างประชาชนกับผู้ดูแลชุมชน
-                    ช่วยให้การแจ้งปัญหาเป็นระบบ
-                    สามารถติดตามได้ และมีข้อมูลสำหรับนำไปพัฒนาพื้นที่
-                </p>
-
-                <br>
-
-                <p>
-                    ระบบนี้เหมาะสำหรับปัญหาที่พบในชีวิตประจำวัน
-                    เช่น ถนนชำรุด ขยะ ไฟถนน น้ำประปา
-                    และปัญหาพื้นที่สาธารณะ
-                </p>
-            </div>
-
-            <div>
-                <h3 style="margin-bottom:20px">
-                    💡 ขั้นตอนการใช้งาน
-                </h3>
-
-                <div class="steps">
-
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div>
-                            <strong>พบปัญหา</strong>
-                            <small>พบปัญหาในบริเวณชุมชน</small>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div>
-                            <strong>แจ้งปัญหา</strong>
-                            <small>กรอกข้อมูลและแนบรูปภาพ</small>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div>
-                            <strong>ตรวจสอบ</strong>
-                            <small>เจ้าหน้าที่รับเรื่อง</small>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div>
-                            <strong>ดำเนินการ</strong>
-                            <small>แก้ไขปัญหาตามลำดับความสำคัญ</small>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">5</div>
-                        <div>
-                            <strong>เสร็จสิ้น</strong>
-                            <small>ประชาชนสามารถติดตามผลได้</small>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
+<section class="section" id="map-section">
+ <div class="container">
+  <div class="section-head"><h2>แผนที่จุดปัญหา</h2><p>แสดงเฉพาะรายการที่มีพิกัด GPS</p></div>
+  <div class="panel"><div id="map"></div></div>
+ </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-    <div class="container">
-
-        <div class="footer-grid">
-
-            <div>
-                <div class="logo footer-logo">
-                    <span class="logo-icon">🏘️</span>
-                    CommunityFix
-                </div>
-
-                <p>
-                    ระบบแจ้งปัญหาชุมชนออนไลน์
-                    เพื่อสร้างชุมชนที่น่าอยู่และพัฒนาอย่างยั่งยืน
-                </p>
-            </div>
-
-            <div>
-                <h4>เมนู</h4>
-                <a href="#home">หน้าแรก</a>
-                <a href="#report">แจ้งปัญหา</a>
-                <a href="#track">ติดตามเรื่อง</a>
-                <a href="#dashboard">Dashboard</a>
-            </div>
-
-            <div>
-                <h4>ติดต่อ</h4>
-                <p>📧 communityfix@example.com</p>
-                <p>📞 000-000-0000</p>
-            </div>
-
-        </div>
-
-        <div class="copyright">
-            © 2026 CommunityFix — Community Problem Reporting System
-        </div>
-
+<section class="section alt" id="admin">
+ <div class="container">
+  <div class="section-head"><h2>Admin Dashboard</h2><p>สำหรับผู้ดูแลระบบตรวจสอบและจัดการรายการแจ้ง</p></div>
+  <div id="adminLogin" class="panel admin-login">
+   <div class="notice">🔐 ส่วนนี้สำหรับผู้ดูแลระบบเท่านั้น</div>
+   <div class="field"><label>อีเมล</label><input id="adminEmail" type="email" placeholder="admin@example.com"></div>
+   <div class="field" style="margin-top:14px"><label>รหัสผ่าน</label><input id="adminPassword" type="password" placeholder="••••••••"></div>
+   <button class="btn btn-primary" id="adminLoginBtn" style="width:100%;margin-top:18px">เข้าสู่ระบบ</button>
+  </div>
+  <div id="adminArea" class="admin-area">
+   <div class="admin-toolbar"><div><h3>รายการแจ้งปัญหาทั้งหมด</h3><p style="color:#64748b">ข้อมูลจาก Google Sheets</p></div><button class="btn btn-light" id="logoutBtn">ออกจากระบบ</button></div>
+   <div class="stats" style="margin-top:18px">
+    <div class="stat"><small>ทั้งหมด</small><b id="aTotal">0</b></div><div class="stat"><small>วิกฤต</small><b id="aCritical">0</b></div><div class="stat"><small>สูง</small><b id="aHigh">0</b></div><div class="stat"><small>แก้ไขแล้ว</small><b id="aDone">0</b></div>
+   </div>
+   <div class="panel" style="margin-top:18px">
+    <div class="admin-toolbar">
+     <select id="adminFilter" style="padding:10px;border:1px solid #cbd5e1;border-radius:12px"><option value="">ทุกสถานะ</option><option>รอตรวจสอบ</option><option>รับเรื่องแล้ว</option><option>กำลังดำเนินการ</option><option>แก้ไขแล้ว</option></select>
+     <input id="adminSearch" placeholder="ค้นหาเลขแจ้ง / สถานที่ / ประเภท" style="padding:10px;border:1px solid #cbd5e1;border-radius:12px;min-width:260px">
     </div>
+    <div class="table-wrap"><table class="table"><thead><tr><th>เลขแจ้ง</th><th>วันที่</th><th>ประเภท</th><th>สถานที่</th><th>ความเร่งด่วน</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="adminTable"></tbody></table></div>
+   </div>
+  </div>
+ </div>
+</section>
+</main>
+
+<footer class="footer">
+ <div class="container footer-grid"><div><b>CommunityFix</b><br>ระบบแจ้งปัญหาชุมชนอย่างเป็นระบบ</div><div>ข้อมูลการแจ้งสามารถเชื่อมต่อกับ Google Sheets ผ่าน Google Apps Script</div></div>
 </footer>
+<div class="toast" id="toast"></div>
 
-<!-- SUCCESS MODAL -->
-<div class="modal" id="successModal">
-    <div class="modal-card">
-
-        <div class="success-icon">✓</div>
-
-        <h2>ส่งเรื่องสำเร็จ!</h2>
-
-        <p style="color:#64748b">
-            ระบบได้รับเรื่องแจ้งปัญหาของคุณแล้ว
-        </p>
-
-        <div class="ticket-code" id="newTicket">
-            CF-2026-001
-        </div>
-
-        <p style="font-size:14px;color:#64748b">
-            กรุณาจดเลขที่แจ้งนี้ไว้สำหรับติดตามสถานะ
-        </p>
-
-        <button
-            class="btn btn-primary"
-            style="margin-top:18px"
-            onclick="closeModal()">
-            ตกลง
-        </button>
-
-    </div>
-</div>
-
-<button class="top" id="topBtn" onclick="window.scrollTo({top:0})">
-    ↑
-</button>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+/* ============================================================
+   CONFIG
+   นำ Web App URL จาก Google Apps Script มาใส่ตรงนี้
+   ============================================================ */
+const SCRIPT_URL = "ใส่_URL_WEB_APP_ของ_Google_Apps_Script_ตรงนี้";
 
-/* =========================
-   MOBILE MENU
-========================= */
+let reports = [];
+let map, markersLayer;
 
-function toggleMenu(){
-    document.getElementById("navLinks").classList.toggle("active");
-}
+const $ = id => document.getElementById(id);
+const toast = msg => { $("toast").textContent=msg; $("toast").style.display="block"; clearTimeout(window.__toast); window.__toast=setTimeout(()=>$("toast").style.display="none",3000); };
 
-document.querySelectorAll(".nav-links a").forEach(link=>{
-    link.addEventListener("click",()=>{
-        document.getElementById("navLinks").classList.remove("active");
-    });
+$("menuBtn").onclick=()=> $("navLinks").classList.toggle("open");
+document.querySelectorAll(".nav-links a").forEach(a=>a.onclick=()=> $("navLinks").classList.remove("open"));
+
+$("image").addEventListener("change",e=>{
+  const file=e.target.files[0], img=$("previewImg");
+  if(!file){img.style.display="none";return}
+  if(file.size>5*1024*1024){toast("รูปภาพต้องมีขนาดไม่เกิน 5 MB");e.target.value="";return}
+  const reader=new FileReader();
+  reader.onload=()=>{img.src=reader.result;img.style.display="inline-block"};
+  reader.readAsDataURL(file);
 });
 
+$("gpsBtn").onclick=()=>{
+ if(!navigator.geolocation){toast("อุปกรณ์นี้ไม่รองรับ GPS");return}
+ $("gpsBtn").textContent="กำลังค้นหา...";
+ navigator.geolocation.getCurrentPosition(pos=>{
+   $("latitude").value=pos.coords.latitude.toFixed(6);
+   $("longitude").value=pos.coords.longitude.toFixed(6);
+   $("gpsText").textContent=`พิกัด: ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
+   $("gpsBtn").textContent="✓ ได้ตำแหน่งแล้ว";
+ },()=>{$("gpsBtn").textContent="📍 GPS";toast("ไม่สามารถเข้าถึงตำแหน่งได้ กรุณาอนุญาต Location")},{enableHighAccuracy:true,timeout:10000});
+};
 
-/* =========================
-   IMAGE PREVIEW
-========================= */
+function makeTicket(){
+ const y=new Date().getFullYear();
+ return `CF-${y}-${Math.floor(100000+Math.random()*900000)}`;
+}
+function fileToBase64(file){
+ return new Promise((resolve,reject)=>{
+   if(!file){resolve("");return}
+   const r=new FileReader();r.onload=()=>resolve(r.result.split(",")[1]);r.onerror=reject;r.readAsDataURL(file);
+ });
+}
+async function api(payload){
+ if(!SCRIPT_URL || SCRIPT_URL.includes("ใส่_URL")){
+   throw new Error("ยังไม่ได้ใส่ SCRIPT_URL ของ Google Apps Script");
+ }
+ const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(payload)});
+ const text=await res.text();
+ try{return JSON.parse(text)}catch{return {success:false,message:text}};
+}
 
-document.getElementById("photo").addEventListener("change",function(){
-
-    const file=this.files[0];
-
-    if(!file) return;
-
-    const reader=new FileReader();
-
-    reader.onload=function(e){
-
-        document.getElementById("previewImg").src=e.target.result;
-
-        document.getElementById("preview").style.display="block";
-
-    };
-
-    reader.readAsDataURL(file);
-
+$("reportForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const btn=$("submitBtn"), file=$("image").files[0];
+ btn.textContent="กำลังส่งข้อมูล...";$("reportForm").classList.add("loading");
+ try{
+   const ticketId=makeTicket();
+   const imageBase64=await fileToBase64(file);
+   const urgency=document.querySelector('input[name="urgency"]:checked').value;
+   const data={
+     action:"submitReport",ticketId,
+     name:$("name").value.trim(),phone:$("phone").value.trim(),
+     category:$("category").value,urgency,location:$("location").value.trim(),
+     description:$("description").value.trim(),
+     latitude:$("latitude").value,longitude:$("longitude").value,
+     imageBase64,imageName:file?file.name:"",imageType:file?file.type:""
+   };
+   const result=await api(data);
+   if(result.success===false) throw new Error(result.message||"ไม่สามารถส่งข้อมูลได้");
+   $("ticketResult").textContent=result.ticketId||ticketId;
+   $("submitResult").style.display="block";
+   $("reportForm").reset();$("previewImg").style.display="none";$("gpsText").textContent="";
+   toast("ส่งเรื่องเรียบร้อยแล้ว");
+   loadPublicData();
+ }catch(err){alert("ส่งข้อมูลไม่สำเร็จ\n"+err.message)}
+ finally{$("reportForm").classList.remove("loading");btn.textContent="🚀 ส่งแจ้งปัญหา"}
 });
 
-
-/* =========================
-   REPORT SYSTEM
-========================= */
-
-function getReports(){
-
-    return JSON.parse(
-        localStorage.getItem("communityFixReports") || "[]"
-    );
-
+function statusClass(s){
+ if(s==="แก้ไขแล้ว")return"status-done";
+ if(s==="กำลังดำเนินการ")return"status-progress";
+ if(s==="รับเรื่องแล้ว")return"status-received";
+ return"status-pending";
 }
-
-function saveReports(data){
-
-    localStorage.setItem(
-        "communityFixReports",
-        JSON.stringify(data)
-    );
-
+function priorityClass(s){
+ if(s==="วิกฤต")return"priority-critical";if(s==="สูง")return"priority-high";if(s==="ปานกลาง")return"priority-mid";return"priority-low";
 }
-
-
-function createTicket(){
-
-    const year=new Date().getFullYear();
-
-    const reports=getReports();
-
-    const number=String(
-        reports.length+1
-    ).padStart(3,"0");
-
-    return `CF-${year}-${number}`;
-
+function renderTimeline(status){
+ const steps=["รอตรวจสอบ","รับเรื่องแล้ว","กำลังดำเนินการ","แก้ไขแล้ว"];
+ const idx=steps.indexOf(status);
+ $("timeline").innerHTML=steps.map((s,i)=>`<div class="step ${i<=idx?"active":""}"><div class="step-circle"></div><span>${s}</span></div>`).join("");
 }
-
-
-document
-.getElementById("reportForm")
-.addEventListener("submit",function(e){
-
-    e.preventDefault();
-
-    const reporter=
-        document.getElementById("reporter").value;
-
-    const category=
-        document.getElementById("category").value;
-
-    const location=
-        document.getElementById("location").value;
-
-    const description=
-        document.getElementById("description").value;
-
-    const ticket=createTicket();
-
-    const report={
-
-        ticket:ticket,
-
-        reporter:reporter,
-
-        category:category,
-
-        location:location,
-
-        description:description,
-
-        status:"รอตรวจสอบ",
-
-        date:new Date().toLocaleDateString("th-TH")
-
-    };
-
-    const reports=getReports();
-
-    reports.push(report);
-
-    saveReports(reports);
-
-    document.getElementById("newTicket").textContent=ticket;
-
-    document
-        .getElementById("successModal")
-        .classList.add("show");
-
-    this.reset();
-
-    document.getElementById("preview").style.display="none";
-
-    updateDashboard();
-
-});
-
-
-/* =========================
-   TRACK REPORT
-========================= */
-
-function trackReport(){
-
-    const code=
-        document
-        .getElementById("trackInput")
-        .value
-        .trim()
-        .toUpperCase();
-
-    const result=
-        document.getElementById("statusResult");
-
-    const reports=getReports();
-
-    const report=reports.find(
-        r=>r.ticket===code
-    );
-
-    result.style.display="block";
-
-    if(!report){
-
-        result.innerHTML=`
-
-            <div style="text-align:center">
-
-                <div style="font-size:45px">🔍</div>
-
-                <h3>ไม่พบข้อมูล</h3>
-
-                <p style="color:#64748b">
-                    ไม่พบเลขที่แจ้ง
-                    <strong>${code || "-"}</strong>
-                </p>
-
-                <p style="font-size:13px;color:#94a3b8">
-                    กรุณาตรวจสอบเลขที่แจ้งอีกครั้ง
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-    result.innerHTML=`
-
-        <div class="ticket-head">
-
-            <div>
-
-                <small style="color:#64748b">
-                    เลขที่แจ้ง
-                </small>
-
-                <h3>${report.ticket}</h3>
-
-            </div>
-
-            <span class="status-badge">
-                ${report.status}
-            </span>
-
-        </div>
-
-        <p>
-            <strong>ประเภท:</strong>
-            ${report.category}
-        </p>
-
-        <p>
-            <strong>สถานที่:</strong>
-            ${report.location}
-        </p>
-
-        <p>
-            <strong>รายละเอียด:</strong>
-            ${report.description}
-        </p>
-
-        <div class="timeline">
-
-            <div class="timeline-item done">
-                <div class="timeline-dot"></div>
-                <div>
-                    <strong>ส่งเรื่องแล้ว</strong>
-                    <small>${report.date}</small>
-                </div>
-            </div>
-
-            <div class="timeline-item active">
-                <div class="timeline-dot"></div>
-                <div>
-                    <strong>รอตรวจสอบ</strong>
-                    <small>ระบบได้รับข้อมูลเรียบร้อย</small>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div>
-                    <strong>กำลังดำเนินการ</strong>
-                    <small>รอเจ้าหน้าที่ดำเนินการ</small>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div>
-                    <strong>แก้ไขแล้ว</strong>
-                    <small>ปิดเรื่อง</small>
-                </div>
-            </div>
-
-        </div>
-
-    `;
-
+$("trackBtn").onclick=async()=>{
+ const id=$("trackInput").value.trim();
+ if(!id){toast("กรุณากรอกเลขที่แจ้ง");return}
+ try{
+   const result=await api({action:"trackReport",ticketId:id});
+   if(!result.success||!result.report){$("statusCard").style.display="none";toast("ไม่พบเลขที่แจ้งนี้");return}
+   const r=result.report;
+   $("statusCard").style.display="block";$("trackTicket").textContent=r.ticketId;
+   $("trackCategory").textContent=r.category||"";
+   $("trackLocation").textContent=r.location||"-";
+   $("trackUrgency").innerHTML=`<span class="pill ${priorityClass(r.urgency)}">${r.urgency||"ไม่ระบุ"}</span>`;
+   $("trackStatus").textContent=r.status||"รอตรวจสอบ";$("trackStatus").className="status-badge "+statusClass(r.status);
+   renderTimeline(r.status||"รอตรวจสอบ");
+ }catch(err){toast(err.message)}
+};
+
+function countBy(key){
+ return reports.reduce((o,r)=>{const k=r[key]||"ไม่ระบุ";o[k]=(o[k]||0)+1;return o},{});
 }
-
-
-/* =========================
-   DASHBOARD
-========================= */
-
-function updateDashboard(){
-
-    const reports=getReports();
-
-    const total=128+reports.length;
-
-    const waiting=
-        7+
-        reports.filter(
-            r=>r.status==="รอตรวจสอบ"
-        ).length;
-
-    document.getElementById("totalStat")
-        .textContent=total;
-
-    document.getElementById("waitingStat")
-        .textContent=waiting;
-
+function renderBars(targetId,data){
+ const el=$(targetId), vals=Object.entries(data), max=Math.max(1,...vals.map(x=>x[1]));
+ if(!vals.length){el.innerHTML='<div class="empty">ยังไม่มีข้อมูล</div>';return}
+ el.innerHTML=vals.sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-row"><div class="bar-label"><span>${k}</span><b>${v}</b></div><div class="bar-bg"><div class="bar-fill" style="width:${v/max*100}%"></div></div></div>`).join("");
 }
-
-
-/* =========================
-   MODAL
-========================= */
-
-function closeModal(){
-
-    document
-        .getElementById("successModal")
-        .classList.remove("show");
-
-    document
-        .getElementById("trackInput")
-        .value=
-        document.getElementById("newTicket").textContent;
-
-    document
-        .getElementById("track")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
-
+function renderDashboard(){
+ const total=reports.length;
+ const pending=reports.filter(r=>r.status==="รอตรวจสอบ").length;
+ const progress=reports.filter(r=>r.status==="กำลังดำเนินการ").length;
+ const done=reports.filter(r=>r.status==="แก้ไขแล้ว").length;
+ ["totalStat","heroTotal","aTotal"].forEach(id=>$(id).textContent=total);
+ ["pendingStat","heroPending"].forEach(id=>$(id).textContent=pending);
+ ["progressStat"].forEach(id=>$(id).textContent=progress);
+ ["doneStat","heroDone","aDone"].forEach(id=>$(id).textContent=done);
+ $("aCritical").textContent=reports.filter(r=>r.urgency==="วิกฤต").length;
+ $("aHigh").textContent=reports.filter(r=>r.urgency==="สูง").length;
+ renderBars("urgencySummary",countBy("urgency"));
+ renderBars("categorySummary",countBy("category"));
 }
-
-
-/* =========================
-   MAP
-========================= */
-
-function mapAlert(type){
-
-    alert(
-        "📍 รายละเอียดจุดปัญหา\n\n" +
-        "ประเภท: " + type +
-        "\n\nนี่คือจุดตัวอย่างสำหรับระบบ Demo"
-    );
-
+function initMap(){
+ map=L.map("map").setView([13.7563,100.5018],6);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(map);
+ markersLayer=L.layerGroup().addTo(map);
 }
+function renderMap(){
+ if(!markersLayer)return;markersLayer.clearLayers();
+ const points=[];
+ reports.forEach(r=>{
+   const lat=parseFloat(r.latitude),lng=parseFloat(r.longitude);
+   if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+   const m=L.marker([lat,lng]).bindPopup(`<b>${r.ticketId||""}</b><br>${r.category||""}<br>ความเร่งด่วน: ${r.urgency||"-"}<br>สถานะ: ${r.status||"-"}`);
+   markersLayer.addLayer(m);points.push([lat,lng]);
+ });
+ if(points.length)map.fitBounds(points,{padding:[30,30]});
+}
+async function loadPublicData(){
+ try{
+   const result=await api({action:"getReports"});
+   if(result.success&&Array.isArray(result.reports)){reports=result.reports;renderDashboard();renderMap()}
+ }catch(e){
+   console.warn("ยังโหลดข้อมูลไม่ได้:",e.message);
+ }
+}
+function renderAdmin(){
+ const filter=$("adminFilter").value, search=$("adminSearch").value.toLowerCase();
+ const rows=reports.filter(r=>(!filter||r.status===filter)&&(!search||`${r.ticketId} ${r.location} ${r.category}`.toLowerCase().includes(search)));
+ $("adminTable").innerHTML=rows.length?rows.map(r=>`
+ <tr>
+  <td><b>${r.ticketId||"-"}</b></td>
+  <td>${r.createdAt||"-"}</td>
+  <td>${r.category||"-"}</td>
+  <td>${r.location||"-"}</td>
+  <td><span class="pill ${priorityClass(r.urgency)}">${r.urgency||"-"}</span></td>
+  <td><span class="status-badge ${statusClass(r.status)}">${r.status||"-"}</span></td>
+  <td><select onchange="changeStatus('${String(r.ticketId).replace(/'/g,"\\'")}',this.value)" style="padding:7px;border:1px solid #cbd5e1;border-radius:9px">
+   ${["รอตรวจสอบ","รับเรื่องแล้ว","กำลังดำเนินการ","แก้ไขแล้ว"].map(s=>`<option ${s===r.status?"selected":""}>${s}</option>`).join("")}
+  </select></td>
+ </tr>`).join(""):'<tr><td colspan="7" class="empty">ยังไม่มีรายการ</td></tr>';
+}
+$("adminFilter").onchange=renderAdmin;$("adminSearch").oninput=renderAdmin;
+async function changeStatus(ticketId,status){
+ try{
+  const result=await api({action:"updateStatus",ticketId,status});
+  if(result.success===false)throw new Error(result.message||"อัปเดตไม่สำเร็จ");
+  const r=reports.find(x=>x.ticketId===ticketId);if(r)r.status=status;
+  renderDashboard();renderAdmin();renderMap();toast("อัปเดตสถานะแล้ว");
+ }catch(e){alert(e.message)}
+}
+window.changeStatus=changeStatus;
 
+$("adminLoginBtn").onclick=async()=>{
+ const email=$("adminEmail").value.trim(),password=$("adminPassword").value;
+ if(!email||!password){toast("กรุณากรอกอีเมลและรหัสผ่าน");return}
+ try{
+   const result=await api({action:"adminLogin",email,password});
+   if(!result.success)throw new Error(result.message||"เข้าสู่ระบบไม่สำเร็จ");
+   sessionStorage.setItem("communityfixAdmin","1");
+   $("adminLogin").style.display="none";$("adminArea").style.display="block";
+   await loadPublicData();renderAdmin();toast("เข้าสู่ระบบสำเร็จ");
+ }catch(e){alert(e.message)}
+};
+$("logoutBtn").onclick=()=>{sessionStorage.removeItem("communityfixAdmin");location.reload()};
 
-/* =========================
-   BACK TO TOP
-========================= */
-
-window.addEventListener("scroll",function(){
-
-    const topBtn=
-        document.getElementById("topBtn");
-
-    if(window.scrollY>500){
-
-        topBtn.style.display="block";
-
-    }else{
-
-        topBtn.style.display="none";
-
-    }
-
-});
-
-
-/* =========================
-   INITIALIZE
-========================= */
-
-updateDashboard();
-
+function boot(){
+ initMap();
+ loadPublicData();
+ if(sessionStorage.getItem("communityfixAdmin")==="1"){
+   $("adminLogin").style.display="none";$("adminArea").style.display="block";
+   setTimeout(renderAdmin,500);
+ }
+}
+boot();
 </script>
-
 </body>
 </html>
